@@ -46,23 +46,36 @@ def getdata(name):
 
             bio = soup_rdf.findAll("foaf:Person")
             for b in bio:
+                foafname = b.find("foaf:name")
                 fname = b.find("foaf:familyName")
-                data_bio["fname"] = fname.text
                 sname = b.find("foaf:givenName")
-                data_bio["sname"] = sname.text
+                if fname is None or sname is None:
+                    data_bio["name"] = foafname.text
+                    data_bio["fname"] = "NA"
+                    data_bio["sname"] = "NA"
+                else:
+                    data_bio["name"] = foafname.text
+                    data_bio["fname"] = fname.text
+                    data_bio["sname"] = sname.text
                 gender = b.find("foaf:gender")
                 if gender is not None:
                     data_bio["gender"] = gender.text
                 else:
                     data_bio["gender"] = "NA"
                 birth = b.findAll("bio:Birth")
-                for i in birth:
-                    birthd = i.find("bio:date")
-                    data_bio["birthd"] = birthd.text
+                if len(birth) > 0:
+                    for i in birth:
+                        birthd = i.find("bio:date")
+                        data_bio["birthd"] = birthd.text
+                else:
+                    data_bio["birthd"] = "NA"
                 death = b.findAll("bio:Death")
-                for i in death:
-                    deathd = i.find("bio:date")
-                    data_bio["deathd"] = deathd.text
+                if len(death) > 0:
+                    for i in death:
+                        deathd = i.find("bio:date")
+                        data_bio["deathd"] = deathd.text
+                else:
+                    data_bio["deathd"] = "NA"
                 career = b.find("rdau:P60492")
                 if career is not None:
                     data_bio["career"] = career.text
