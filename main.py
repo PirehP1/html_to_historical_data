@@ -1,10 +1,72 @@
 from flask import Flask, redirect, url_for, request, render_template
 from werkzeug.utils import secure_filename
+from SPARQLWrapper import SPARQLWrapper, JSON
 from bs4 import BeautifulSoup
-from urllib.request import Request, urlopen
+# from urllib.request import Request, urlopen
 import os
+import re
+import sys
 
 app = Flask(__name__)
+endpoint_url = "https://data.idref.fr/sparql"
+
+
+def get_results(endpoint_url, query):
+    # from Wikidata Query Service example
+    user_agent = "WDQS-example Python/%s.%s" % (sys.version_info[0],
+                                                sys.version_info[1])
+    sparql = SPARQLWrapper(endpoint_url, agent=user_agent)
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+    return sparql.query().convert()
+
+
+def getbio(urlid):
+    query = f"""
+    PREFIX bio: <http://purl.org/vocab/bio/0.1/>
+    PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+    PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+    select * where {{
+    BIND(<{urlid}> AS ?person)
+    optional {{ ?person foaf:name ?nom_plein. }}
+    optional {{ ?person foaf:givenName ?prenom. }}
+    optional {{ ?person foaf:familyName ?nom . }}
+    optional {{ ?person bio:event [a bio:Birth ; bio:date ?naissance] }}
+    optional {{ ?person bio:event [a bio:Death ; bio:date ?mort] }} .
+    optional {{ ?person skos:note ?bio }}
+    }}
+    """
+    person = {}
+    results = get_results(endpoint_url, query)
+    for result in results["results"]["bindings"]:
+        person["nom_plein"] = result["nom_plein"]["value"] if ("nom_plein" in result) else None
+        person["prenom"] = result["prenom"]["value"] if ("prenom" in result) else None
+        person["nom"] = result["nom"]["value"] if ("nom" in result) else None
+        person["naissance"] = result["naissance"]["value"] if ("naissance" in result) else None
+        person["mort"] = result["mort"]["value"] if ("mort" in result) else None
+        person["bio"] = result["bio"]["value"] if ("bio" in result) else None
+
+    return (person)
+
+
+def getpubli(urlid):
+    query = f"""
+    PREFIX dcterms: <http://purl.org/dc/terms/>
+
+    select (count(?titre) as ?eff)
+    where {{
+      BIND(<{urlid}> AS ?person)
+      optional {{ ?doc ?relator ?person ;
+                 dcterms:bibliographicCitation ?titre.
+    }}
+    }}
+    """
+    results = get_results(endpoint_url, query)
+    for result in results["results"]["bindings"]:
+        effectif = result["eff"]["value"] if ("eff" in result) else None
+
+    return (effectif)
 
 
 @app.route('/')
@@ -36,59 +98,25 @@ def getdata(name):
     liens = soup.findAll("a")
     for lien in liens:
         url = lien.get("href")
-        if url is not None and url.startswith("https://www.idref.fr/") is True:
-            data_bio = {}
-            rdf = str(url) + ".rdf"
-
-            req = Request(rdf)
-            xml = urlopen(req).read()
-            soup_rdf = BeautifulSoup(xml, "xml")
-
-            bio = soup_rdf.findAll("foaf:Person")
-            for b in bio:
-                foafname = b.find("foaf:name")
-                fname = b.find("foaf:familyName")
-                sname = b.find("foaf:givenName")
-                if fname is None or sname is None:
-                    data_bio["name"] = foafname.text
-                    data_bio["fname"] = "NA"
-                    data_bio["sname"] = "NA"
+        # print(url)
+        if url is not None and "www.idref.fr" in url:
+            id_regex = re.search(r"\.fr/(.*)/?", url)
+            if id_regex is not None:
+                id_content = id_regex.group(1)
+                if url.endswith("/id"):
+                    urlid = "http://www.idref.fr/" + str(id_content)
                 else:
-                    data_bio["name"] = foafname.text
-                    data_bio["fname"] = fname.text
-                    data_bio["sname"] = sname.text
-                gender = b.find("foaf:gender")
-                if gender is not None:
-                    data_bio["gender"] = gender.text
-                else:
-                    data_bio["gender"] = "NA"
-                birth = b.findAll("bio:Birth")
-                if len(birth) > 0:
-                    for i in birth:
-                        birthd = i.find("bio:date")
-                        data_bio["birthd"] = birthd.text
-                else:
-                    data_bio["birthd"] = "NA"
-                death = b.findAll("bio:Death")
-                if len(death) > 0:
-                    for i in death:
-                        deathd = i.find("bio:date")
-                        data_bio["deathd"] = deathd.text
-                else:
-                    data_bio["deathd"] = "NA"
-                career = b.find("rdau:P60492")
-                if career is not None:
-                    data_bio["career"] = career.text
-                elif b.find("skos:note") is not None:
-                    career = b.find("skos:note")
-                    data_bio["career"] = career.text
-                else:
-                    data_bio["career"] = "NA"
-            biblio = soup_rdf.findAll("bibo:Document")
-            notices = len(biblio)
-            data_bio["notices"] = notices
-
-            biographies.append(data_bio)
+                    urlid = "http://www.idref.fr/" + str(id_content) + "/id"
+                # print("    {}".format(urlid))
+                bio = getbio(urlid)
+                eff_publi = getpubli(urlid)
+                bio["publis"] = eff_publi
+                # print(bio)
+                biographies.append(bio)
+        # else:
+        #     # print("pas url ok")
+        # print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    # return (biographies)
 
     os.remove(name)
 
@@ -96,4 +124,4 @@ def getdata(name):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
