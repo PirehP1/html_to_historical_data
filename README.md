@@ -4,7 +4,7 @@ Service python en Flask qui récupère tous les liens vers des notices d'autorit
 
 Dans l'état actuel du script (février 2024) les chaînes de caractères à chercher doivent être balisées par un élément `<nom>` dans lequel un attribut `sameAS` doit contenir l'URI de la notice d'autorité IdRef correspondante. Par exemple :
 
-```
+```xml
 <nom type="personne" valeur="Broglie (de), Albert" sameAs="http://www.idref.fr/029795370/id">Broglie</nom>
 ```
 
