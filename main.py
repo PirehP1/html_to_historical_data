@@ -8,6 +8,8 @@ import re
 import sys
 
 app = Flask(__name__)
+
+# URL du sparql endpoint
 endpoint_url = "https://data.idref.fr/sparql"
 
 
@@ -80,11 +82,11 @@ def getfile():
         f = request.files['file']
         fname = os.path.splitext(f.filename)
         fext = fname[1]
-        if fext == ".html":
+        if fext == ".html" or fext == ".xml":
             f.save(secure_filename(f.filename))
             return redirect(url_for('getdata', name=f.filename))
         else:
-            print("Ce n'est pas un fichier HTML.")
+            print("Ce n'est pas un fichier HTML ou un fichier XML.")
 
 
 @app.route('/getdata/<name>')
@@ -95,10 +97,9 @@ def getdata(name):
 
     biographies = []
 
-    liens = soup.findAll("a")
+    liens = soup.findAll("nom")
     for lien in liens:
-        url = lien.get("href")
-        # print(url)
+        url = lien.get("sameas")
         if url is not None and "www.idref.fr" in url:
             id_regex = re.search(r"\.fr/(.*)/?", url)
             if id_regex is not None:
@@ -107,15 +108,14 @@ def getdata(name):
                     urlid = "http://www.idref.fr/" + str(id_content)
                 else:
                     urlid = "http://www.idref.fr/" + str(id_content) + "/id"
-                # print("    {}".format(urlid))
+                print("    {}".format(urlid))
                 bio = getbio(urlid)
                 eff_publi = getpubli(urlid)
                 bio["publis"] = eff_publi
-                # print(bio)
+                print(bio)
                 biographies.append(bio)
-        # else:
-        #     # print("pas url ok")
-        # print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        else:
+            print("Erreur URL :\n{}\n---".format(url))
     # return (biographies)
 
     os.remove(name)
@@ -124,4 +124,4 @@ def getdata(name):
 
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)
