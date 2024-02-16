@@ -1,17 +1,21 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@1.*/css/pico.min.css">
-    <title>De l'édition HTML aux données</title>
+    <title>De l'édition numérique aux données</title>
   </head>
   <body>
     <main class="container">
-      <h1>De l'édition HTML aux données</h1>
+      <h1>De l'édition numérique aux données</h1>
 
       <form action="{{ url_for('getfile') }}" method = "post" enctype="multipart/form-data">
-       <label for="file">Choisissez un fichier HTML</label>
+	<!-- <label for="element">Indiquez le nom de la balise contenant l'entité nommée</label> -->
+	<!-- <input type="text" id="element" name="element"> -->
+	<!-- <label for="element">Indiquez le nom de l'attribut contenant l'URI</label> -->
+	<!-- <input type="text" id="attribut" name="attribut"> -->
+       <label for="file">Choisissez un fichier XML</label>
         <input type="file" id="file" name="file">
         <input type="submit" value="Envoyer" />
       </form>
