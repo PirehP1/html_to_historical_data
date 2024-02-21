@@ -83,8 +83,9 @@ def getfile():
         fname = os.path.splitext(f.filename)
         fext = fname[1]
         if fext == ".html" or fext == ".xml":
-            f.save(secure_filename(f.filename))
-            return redirect(url_for('getdata', name=f.filename))
+            filename = secure_filename(f.filename)
+            f.save(filename)
+            return redirect(url_for('getdata', name=filename))
         else:
             print("Ce n'est pas un fichier HTML ou un fichier XML.")
 
