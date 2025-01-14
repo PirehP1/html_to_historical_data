@@ -9,62 +9,41 @@
   <body>
     <main class="container">
       <h2>Données extraites d'IdRef à partir du fichier soumis</h2>
-    <table role="grid">
-  <!-- table header -->
-  <tr>
-    {% for key in result[0] %}
-    <th>{{ key }}</th>
-     {% endfor %}
-  </tr>
+      <table role="grid">
+	<!-- table header -->
+	<tr>
+	  {% for key in result[0] %}
+	  <th>{{ key }}</th>
+	  {% endfor %}
+	</tr>
 
-  <!-- table rows -->
-  {% for dict_item in result %}
-  <tr>
-    {% for value in dict_item.values() %}
-     <td>{{ value }}</td>
-     {% endfor %}
-  </tr>
-  {% endfor %}
-    </table>
-    <br />
-    <button type="button" onclick="tableToCSV()">Exporter le tableau de résultat</button>
+	<!-- table rows -->
+        {% for row in result %}
+        <tr>
+          {% for key, value in row.items() %}
+          <td>
+            {% if key == 'uris' %}
+	    <ul>
+              {% for url in value %}
+              <li><a href="{{ url }}">{{ url }}</a></li>
+              {% endfor %}
+	    </ul>
+            {% else %}
+            {{ value }}
+            {% endif %}
+          </td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </table>
+      <br />
+      <button type="button" onclick="downloadTableAsCSV()">Exporter le tableau de résultat</button>
     </main>
-        <footer>
+    <footer>
       <small><a href="https://recherche-pireh.pantheonsorbonne.fr/">Pireh, Université Panthéon-Sorbonne</a>.</small>
       <br />
       <small><a href="https://github.com/PirehP1/html_to_historical_data">Code source</a>.</small>
-	</footer>
+    </footer>
 
-	<script type="text/javascript">
-	  // from https://www.geeksforgeeks.org/how-to-export-html-table-to-csv-using-javascript/
-              function tableToCSV() {
-		  let csv_data = [];
-		  let rows = document.getElementsByTagName('tr');
-		  for (let i = 0; i < rows.length; i++) {
-                      let cols = rows[i].querySelectorAll('td,th');
-                      let csvrow = [];
-                      for (let j = 0; j < cols.length; j++) {
-			  csvrow.push(cols[j].innerHTML);
-                      }
-                      csv_data.push(csvrow.join(";"));
-		  }
-		  csv_data = csv_data.join('\n');
-		  downloadCSVFile(csv_data); 
-              }
-
-        function downloadCSVFile(csv_data) {
-            CSVFile = new Blob([csv_data], {
-                type: "text/csv"
-            });
-            let temp_link = document.createElement('a');
-            temp_link.download = "resultats.csv";
-            let url = window.URL.createObjectURL(CSVFile);
-            temp_link.href = url;
-            temp_link.style.display = "none";
-            document.body.appendChild(temp_link);
-            temp_link.click();
-            document.body.removeChild(temp_link);
-        }
-    </script>
   </body>
 </html>
