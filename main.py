@@ -7,6 +7,7 @@ import os
 import re
 import sys
 
+
 app = Flask(__name__)
 
 # URL du sparql endpoint
@@ -71,6 +72,22 @@ def getpubli(urlid):
     return (effectif)
 
 
+def geturis(urlid):
+    query = f"""
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+    select distinct ?uris where {{
+    optional {{<{urlid}> owl:sameAs ?uris}}
+    }}
+    """
+    uris = []
+    results = get_results(endpoint_url, query)
+    for result in results["results"]["bindings"]:
+        uris.append(result["uris"]["value"] if ("uris" in result) else None)
+    
+    return (uris)
+
+    
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -93,6 +110,7 @@ def getfile():
 @app.route('/getdata/<name>')
 def getdata(name):
     html = open(name, "r")
+    # html = open(os.path.join(app.instance_path, name), "r")
     content = html.read()
     soup = BeautifulSoup(content, "lxml")
 
@@ -113,8 +131,11 @@ def getdata(name):
                 bio = getbio(urlid)
                 eff_publi = getpubli(urlid)
                 bio["publis"] = eff_publi
+                uris = geturis(urlid)
+                bio["uris"] = uris
                 print(bio)
                 biographies.append(bio)
+
         else:
             print("Erreur URL :\n{}\n---".format(url))
     # return (biographies)
