@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Ce fichier comporte l'édition d'une lettre tirée de la correspondance de Louis Pasteur
+Création du fichier: 2023-09-15
+Dernière modification du fichier: 2023-09-15
+Auteur: PIREH
+-->
+<document id="1" destinataire="Ernest Legouvé" datation="24 juin 1881">
+  <notice>
+    <titre>Correspondance de Pasteur, 1840-1895. 3</titre>
+    <auteur>Pasteur, Louis (1822-1895)</auteur>
+    <lieu>Paris</lieu>
+    <date type="édition">1940-1951</date>
+    <éditeur>Pasteur Vallery-Radot, Louis (1886-1970)</éditeur>
+    <type>monographie imprimée</type>
+    <langue>français</langue>
+    <url>http://catalogue.bnf.fr/ark:/12148/cb32510650x</url>
+    <conservation>Bibliothèque nationale de France</conservation>
+    <date type="mise en ligne" label="2012-10-24">24/10/2012</date>
+  </notice>
+  <lettre>
+    <destinataire>
+      A <nom type="personne" valeur="Legouvé, Ernest" sameAs="http://www.idref.fr/034279334/id">ERNEST LEGOUVÉ</nom>.
+    </destinataire>
+    <datation>
+      <nom type="lieu" valeur="Paris">Paris</nom>, ce <date type="production" label="1881-06-24">24 juin 1881</date>.
+    </datation>
+    <salutation>Mon cher maître!</salutation>
+    <corps>
+      <p>Laissez-moi vous appeler ainsi et garder mon culte intact. Séduit, avant de vous connaître personnellement par votre talent d'écrivain, je vous ai admiré dans vos conférences de l'<nom type="lieu" valeur="École Normale">Ecole Normale</nom>. Des sentiments d'une vive affection pour vous et les vôtres me pénètrent depuis que ma chère enfant a eu le bonheur d'entrer dans votre famille<footnote ref="1">[1]</footnote> ; mais je ne puis me résoudre à supprimer la distance qui sépare l'élève du maître, ni à altérer, pour si peu que ce soit, fût-ce même par une appellation trop intime au début d'une lettre, le respect que m'inspire tout homme d'un talent vraiment supérieur.</p>
+      <p>Et maintenant, à dire vrai, mon cher maître, je ne me suis pas mépris sur les sentiments de votre première et affectueuse lettre, jugée du point de vue académique. Je ne vous pointais pas et c'est tout, quoique, au fond de coeur, je savais bien que Madame <nom type="personne" valeur="Desvallières, Émile">Desvallières</nom> écrirait votre bulletin. Aujourd'hui que vous êtes au premier rang de ma liste<footnote ref="2">[2]</footnote> le caractère de la victoire sera celui que vous rêviez : toutes portes ouvertes. <nom type="personne" valeur="Dumas, Jean-Baptiste" sameAs="http://www.idref.fr/027287483/id">J.-B. Dumas</nom>, <nom type="personne" valeur="Nisard, Désiré" sameAs="http://www.idref.fr/028752171/id">Nisard</nom>, <nom type="personne" valeur="Lister, (?)">Lister</nom>, <nom type="personne" valeur="Caro, Elme-Marie-Marie" sameAs="http://www.idref.fr/026767767/id">Caro</nom><footnote ref="3">[3]</footnote>, de <nom type="personne" valeur="Broglie (de), Albert" sameAs="http://www.idref.fr/029795370/id">Broglie</nom>, de <nom type="personne" valeur="Falloux (de), Frédéric Alfred" sameAs="http://www.idref.fr/03440788X/id">Falloux</nom><footnote ref="4">[4]</footnote> sont très résolus. D'autres qui, à ma connaissance, n'ont pas encore parlé cette fois, m'étaient tout acquis dans des occasions précedentes. Tout indique que sur le nom de Littré ils seraient non moins empressés à accepter ma candidature. Je suis Persuadé que, hier à l'<nom type="lieu" valeur="Académie">Académie</nom>, vous aurez recueilli une impression très favorable.</p>
+    </corps>
+    <conclusion>Veuillez agréer, mon cher maître, l'expression de toute ma gratitude et présenter à Madame Desvallières l'hommage de ma très respectueuse affection.</conclusion>
+    <signature>
+      <nom type="personne" valeur="Pasteur, Louis" sameAs="https://www.idref.fr/027059898">L. PASTEUR</nom>.
+    </signature>
+  </lettre>
+  
+  <footnotes>
+    <note id="1">Legouvé était le grand-oncle de René Vallery-Radot.</note>
+    <note id="2">Legouvé, voyant le succès assuré pour Pasteur, lui avait enfin promis sa voix.</note>
+    <note id="3">Elme-Marie-Marie Caro (1826-1887), philosophe spiritualiste, membre de l'Académie française.</note>
+    <note id="4">Comte de Falloux (1811-1886), écrivain et homme politique, auteur de la loi de 1850 sur la liberté de l'enseignement.</note>
+  </footnotes>
+  
+</document>
