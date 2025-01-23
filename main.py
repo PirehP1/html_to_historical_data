@@ -26,20 +26,37 @@ def get_results(endpoint_url, query):
 
 def getbio(urlid):
     query = f"""
-    PREFIX bio: <http://purl.org/vocab/bio/0.1/>
     PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+    PREFIX bio: <http://purl.org/vocab/bio/0.1/>
     PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    PREFIX dc: <http://purl.org/dc/elements/1.1/>
+    PREFIX dcterms: <http://purl.org/dc/terms/>
+    PREFIX rdau: <http://rdaregistry.info/Elements/u/>
 
-    select * where {{
+    SELECT ?person ?nom_plein ?prenom ?nom ?bio ?naissance ?mort
+    WHERE {{
     BIND(<{urlid}> AS ?person)
-    optional {{ ?person foaf:name ?nom_plein. }}
-    optional {{ ?person foaf:givenName ?prenom. }}
-    optional {{ ?person foaf:familyName ?nom . }}
-    optional {{ ?person bio:event [a bio:Birth ; bio:date ?naissance] }}
-    optional {{ ?person bio:event [a bio:Death ; bio:date ?mort] }} .
-    optional {{ ?person skos:note ?bio }}
-    }}
+
+   OPTIONAL {{ ?person foaf:name ?nom_plein. }}
+   OPTIONAL {{ ?person foaf:givenName ?prenom. }}
+   OPTIONAL {{ ?person foaf:familyName ?nom. }}
+   OPTIONAL {{ ?person skos:note ?bio. }}
+   OPTIONAL {{ ?person rdau:P60492 ?bio. }}
+   OPTIONAL {{
+     ?person bio:event ?event_birth.
+     ?event_birth a bio:Birth ; bio:date ?naissance.   }}
+   OPTIONAL {{
+     ?person bio:event ?event_birth.
+     ?event_birth a bio:Birth ; dcterms:date ?naissance.   }}
+   OPTIONAL {{
+     ?person bio:event ?event_death.
+     ?event_death a bio:Death ; bio:date ?mort.   }}
+   OPTIONAL {{
+     ?person bio:event ?event_death.
+     ?event_death a bio:Death ; dcterms:date ?mort.   }}
+}}
     """
+
     person = {}
     results = get_results(endpoint_url, query)
     for result in results["results"]["bindings"]:
