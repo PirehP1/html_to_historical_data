@@ -33,13 +33,14 @@ def getbio(urlid):
     PREFIX dcterms: <http://purl.org/dc/terms/>
     PREFIX rdau: <http://rdaregistry.info/Elements/u/>
 
-    SELECT ?person ?nom_plein ?prenom ?nom ?bio ?naissance ?mort
+    SELECT ?person ?nom_plein ?prenom ?nom ?genre ?bio ?naissance ?mort
     WHERE {{
     BIND(<{urlid}> AS ?person)
 
    OPTIONAL {{ ?person foaf:name ?nom_plein. }}
    OPTIONAL {{ ?person foaf:givenName ?prenom. }}
    OPTIONAL {{ ?person foaf:familyName ?nom. }}
+   OPTIONAL {{ ?person foaf:gender ?genre. }}
    OPTIONAL {{ ?person skos:note ?bio. }}
    OPTIONAL {{ ?person rdau:P60492 ?bio. }}
    OPTIONAL {{
@@ -63,6 +64,7 @@ def getbio(urlid):
         person["nom_plein"] = result["nom_plein"]["value"] if ("nom_plein" in result) else None
         person["prenom"] = result["prenom"]["value"] if ("prenom" in result) else None
         person["nom"] = result["nom"]["value"] if ("nom" in result) else None
+        person["genre"] = result["genre"]["value"] if ("genre" in result) else None
         person["naissance"] = result["naissance"]["value"] if ("naissance" in result) else None
         person["mort"] = result["mort"]["value"] if ("mort" in result) else None
         person["bio"] = result["bio"]["value"] if ("bio" in result) else None
